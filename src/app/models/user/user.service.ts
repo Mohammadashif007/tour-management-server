@@ -12,6 +12,18 @@ const createUserIntoDB = async (payload: Partial<IUser>) => {
     return result;
 };
 
+const getAllUsersFromDB = async () => {
+    const users = await User.find({});
+    const totalUser = await User.countDocuments();
+    return {
+        data: users,
+        meta: {
+            total: totalUser,
+        },
+    };
+};
+
 export const UserServices = {
     createUserIntoDB,
+    getAllUsersFromDB,
 };

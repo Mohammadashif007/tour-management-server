@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { envVers } from "../config/env";
 import { AppError } from "../errorHelpers/appError";
 
+
 export const globalErrorHandler = (
     err: any,
     req: Request,
