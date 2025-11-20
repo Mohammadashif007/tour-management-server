@@ -34,7 +34,9 @@ const getNewAccessToken = catchAsync(async (req: Request, res: Response) => {
     if (!refreshToken) {
         throw new AppError(httpStatus.BAD_REQUEST, "Refresh token not found");
     }
-    const tokenInfo = await AuthServices.getNewAccessToken(refreshToken as string);
+    const tokenInfo = await AuthServices.getNewAccessToken(
+        refreshToken as string
+    );
     // res.cookie("accessToken", tokenInfo, {
     //     httpOnly: true,
     //     secure: false,
@@ -44,12 +46,34 @@ const getNewAccessToken = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "new access token created",
+        message: "new access token retrieve successfully",
         data: tokenInfo,
+    });
+});
+
+// ! log out
+const logOut = catchAsync(async (req: Request, res: Response) => {
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+    });
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+    });
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "User logout successfully",
+        data: null,
     });
 });
 
 export const AuthControllers = {
     credentialLogin,
     getNewAccessToken,
+    logOut,
 };
