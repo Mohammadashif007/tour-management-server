@@ -4,6 +4,6 @@ import express from "express";
 const router = express.Router();
 
 router.post("/login", AuthControllers.credentialLogin);
-router.post("/refreshToken", AuthControllers.newAccessToken);
+router.post("/refresh-Token", AuthControllers.getNewAccessToken);
 
 export const AuthRoutes = router;

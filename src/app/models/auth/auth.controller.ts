@@ -3,19 +3,34 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { AuthServices } from "./auth.service";
 import httpStatus from "http-status-codes";
+import { AppError } from "../../errorHelpers/AppError";
 
+// ! login with email and password
 const credentialLogin = catchAsync(async (req: Request, res: Response) => {
-    const result = await AuthServices.credentialsLogin(req.body);
+    const loginInfo = await AuthServices.credentialsLogin(req.body);
+    res.cookie("accessToken", loginInfo.accessToken, {
+        httpOnly: true,
+        secure: false,
+    });
+    res.cookie("refreshToken", loginInfo.refreshToken, {
+        httpOnly: true,
+        secure: false,
+    });
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "User login successfully",
-        data: result,
+        data: loginInfo,
     });
 });
 
-const newAccessToken = catchAsync(async (req: Request, res: Response) => {
+// ! get new access token with refresh token
+const getNewAccessToken = catchAsync(async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Refresh token not found");
+    }
     const result = await AuthServices.getNewAccessToken(refreshToken);
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -27,5 +42,5 @@ const newAccessToken = catchAsync(async (req: Request, res: Response) => {
 
 export const AuthControllers = {
     credentialLogin,
-    newAccessToken,
+    getNewAccessToken,
 };
