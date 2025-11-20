@@ -4,18 +4,21 @@ import { sendResponse } from "../../utils/sendResponse";
 import { AuthServices } from "./auth.service";
 import httpStatus from "http-status-codes";
 import { AppError } from "../../errorHelpers/AppError";
+import { setAuthToken } from "../../utils/setCookies";
 
 // ! login with email and password
 const credentialLogin = catchAsync(async (req: Request, res: Response) => {
     const loginInfo = await AuthServices.credentialsLogin(req.body);
-    res.cookie("accessToken", loginInfo.accessToken, {
-        httpOnly: true,
-        secure: false,
-    });
-    res.cookie("refreshToken", loginInfo.refreshToken, {
-        httpOnly: true,
-        secure: false,
-    });
+    // res.cookie("accessToken", loginInfo.accessToken, {
+    //     httpOnly: true,
+    //     secure: false,
+    // });
+    setAuthToken(res, loginInfo);
+    // res.cookie("refreshToken", loginInfo.refreshToken, {
+    //     httpOnly: true,
+    //     secure: false,
+    // });
+    // setAuthToken(res, loginInfo);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -31,12 +34,18 @@ const getNewAccessToken = catchAsync(async (req: Request, res: Response) => {
     if (!refreshToken) {
         throw new AppError(httpStatus.BAD_REQUEST, "Refresh token not found");
     }
-    const result = await AuthServices.getNewAccessToken(refreshToken);
+    const tokenInfo = await AuthServices.getNewAccessToken(refreshToken as string);
+    // res.cookie("accessToken", tokenInfo, {
+    //     httpOnly: true,
+    //     secure: false,
+    // });
+    setAuthToken(res, tokenInfo);
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "new access token created",
-        data: result,
+        data: tokenInfo,
     });
 });
 

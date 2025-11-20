@@ -52,7 +52,8 @@ const updateUser = async (
     payload: Partial<IUser>,
     decodedToken: JwtPayload
 ) => {
-    const isUserExist = await User.findById(userId);
+    
+    const isUserExist = await User.findOne({ email: payload.email });
     if (!isUserExist) {
         throw new AppError(httpStatus.NOT_FOUND, "User dose not exist");
     }

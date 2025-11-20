@@ -28,7 +28,7 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
     }
 
     // ! create access and refresh token
-    const userToken = createUserToken(payload);
+    const userToken = createUserToken(isUserExist);
 
     // ! password exclusion
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -46,7 +46,7 @@ const getNewAccessToken = async (refreshToken: string) => {
     const newAccessToken = await createNewAccessTokenWithRefreshToken(
         refreshToken
     );
-    return newAccessToken;
+    return { accessToken: newAccessToken };
 };
 
 export const AuthServices = {
