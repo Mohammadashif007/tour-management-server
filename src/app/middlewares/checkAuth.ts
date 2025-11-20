@@ -4,7 +4,6 @@ import httpStatus from "http-status-codes";
 import { verifyToken } from "../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
 
-
 export const checkAuth =
     (...authRoles: string[]) =>
     async (req: Request, res: Response, next: NextFunction) => {
@@ -24,6 +23,7 @@ export const checkAuth =
                     "You are not permitted to access this route"
                 );
             }
+            req.user = verifiedToken;
             next();
         } catch (error) {
             next(error);
