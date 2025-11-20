@@ -7,6 +7,8 @@ import {
     createNewAccessTokenWithRefreshToken,
     createUserToken,
 } from "../../utils/userTokens";
+import { JwtPayload } from "jsonwebtoken";
+import { envVers } from "../../config/env";
 
 // ! login user
 const credentialsLogin = async (payload: Partial<IUser>) => {
@@ -49,7 +51,38 @@ const getNewAccessToken = async (refreshToken: string) => {
     return { accessToken: newAccessToken };
 };
 
+// ! reset password
+const resetPassword = async (
+    oldPassword: string,
+    newPassword: string,
+    decodedToken: JwtPayload
+) => {
+    console.log("old", oldPassword);
+    // console.log("new", newPassword);
+    const user = await User.findById(decodedToken.userId);
+    if (!user) {
+        throw new AppError(httpStatus.BAD_REQUEST, "User does not exist");
+    }
+
+    const isOldPasswordMatched = await bcrypt.compare(
+        oldPassword,
+        user.password as string
+    );
+
+    if (!isOldPasswordMatched) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Password dose not match");
+    }
+
+    user.password = await bcrypt.hash(
+        newPassword,
+        Number(envVers.BCRYPT_SAULT_ROUND)
+    );
+
+    await user.save();
+};
+
 export const AuthServices = {
     credentialsLogin,
     getNewAccessToken,
+    resetPassword,
 };
