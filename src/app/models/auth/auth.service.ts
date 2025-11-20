@@ -4,6 +4,7 @@ import { User } from "../user/user.model";
 import httpStatus from "http-status-codes";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../utils/jwt";
+import { envVers } from "../../config/env";
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
     const { email, password } = payload;
@@ -27,11 +28,22 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
         role: isUserExist.role,
     };
 
-    const accessToken = generateToken(jwtPayload);
+    const accessToken = generateToken(
+        jwtPayload,
+        envVers.JWT_ACCESS_SECRET,
+        envVers.JWT_ACCESS_EXPIRES
+    );
+
+    const refreshToken = generateToken(
+        jwtPayload,
+        envVers.JWT_REFRESH_SECRET,
+        envVers.JWT_REFRESH_EXPIRES
+    );
 
     return {
         email: isUserExist.email,
         accessToken,
+        refreshToken,
     };
 };
 

@@ -3,6 +3,7 @@ import { AppError } from "../errorHelpers/AppError";
 import httpStatus from "http-status-codes";
 import { verifyToken } from "../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
+import { envVers } from "../config/env";
 
 export const checkAuth =
     (...authRoles: string[]) =>
@@ -16,7 +17,10 @@ export const checkAuth =
                 );
             }
 
-            const verifiedToken = verifyToken(accessToken) as JwtPayload;
+            const verifiedToken = verifyToken(
+                accessToken,
+                envVers.JWT_ACCESS_SECRET
+            ) as JwtPayload;
             if (!authRoles.includes(verifiedToken.role)) {
                 throw new AppError(
                     httpStatus.BAD_REQUEST,
