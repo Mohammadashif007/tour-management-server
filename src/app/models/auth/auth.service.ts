@@ -3,8 +3,7 @@ import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import httpStatus from "http-status-codes";
 import bcrypt from "bcrypt";
-import { generateToken } from "../../utils/jwt";
-import { envVers } from "../../config/env";
+import { createUserToken } from "../../utils/userTokens";
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
     const { email, password } = payload;
@@ -22,28 +21,15 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
         throw new AppError(httpStatus.BAD_REQUEST, "Password dose not match");
     }
 
-    const jwtPayload = {
-        userId: isUserExist._id,
-        email: isUserExist.email,
-        role: isUserExist.role,
-    };
+    const userToken = createUserToken(payload);
 
-    const accessToken = generateToken(
-        jwtPayload,
-        envVers.JWT_ACCESS_SECRET,
-        envVers.JWT_ACCESS_EXPIRES
-    );
-
-    const refreshToken = generateToken(
-        jwtPayload,
-        envVers.JWT_REFRESH_SECRET,
-        envVers.JWT_REFRESH_EXPIRES
-    );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: pass, ...rest } = isUserExist.toObject();
 
     return {
-        email: isUserExist.email,
-        accessToken,
-        refreshToken,
+        user: rest,
+        accessToken: userToken.accessToken,
+        refreshToken: userToken.refreshToken,
     };
 };
 
