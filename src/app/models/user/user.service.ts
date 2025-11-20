@@ -3,6 +3,7 @@ import { IAuthProvider, IUser } from "./user.interface";
 import { User } from "./user.model";
 import statusCode from "http-status-codes";
 import bcrypt from "bcrypt";
+import { envVers } from "../../config/env";
 
 const createUserIntoDB = async (payload: Partial<IUser>) => {
     const { email, password, ...rest } = payload;
@@ -12,7 +13,10 @@ const createUserIntoDB = async (payload: Partial<IUser>) => {
         throw new AppError(statusCode.BAD_REQUEST, "User Already exist");
     }
 
-    const hashedPassword = await bcrypt.hash(password as string, 10);
+    const hashedPassword = await bcrypt.hash(
+        password as string,
+        Number(envVers.BCRYPT_SAULT_ROUND)
+    );
 
     const authsProvider: IAuthProvider = {
         provider: "credentials",
