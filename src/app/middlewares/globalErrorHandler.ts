@@ -2,8 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import { envVers } from "../config/env";
-import { AppError } from "../errorHelpers/appError";
-
+import { AppError } from "../errorHelpers/AppError";
 
 export const globalErrorHandler = (
     err: any,
@@ -13,6 +12,7 @@ export const globalErrorHandler = (
 ) => {
     let statusCode = 500;
     let message = `Something went wrong !! ${err}`;
+    console.log(err);
 
     if (err instanceof AppError) {
         statusCode = err.statusCode;
@@ -25,7 +25,7 @@ export const globalErrorHandler = (
     res.status(statusCode).json({
         success: false,
         message: message,
-        err,
+        err: err,
         stack: envVers.NODE_ENV === "development" ? err.stack : "",
     });
 };
