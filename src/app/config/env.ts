@@ -13,6 +13,8 @@ interface EnvConfig {
     SUPER_ADMIN_PASSWORD: string;
     JWT_REFRESH_SECRET: string;
     JWT_REFRESH_EXPIRES: string;
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -27,6 +29,8 @@ const loadEnvVariables = (): EnvConfig => {
         "SUPER_ADMIN_PASSWORD",
         "JWT_REFRESH_EXPIRES",
         "JWT_REFRESH_SECRET",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
     ];
 
     requiredEnvVariables.forEach((key) => {
@@ -46,6 +50,8 @@ const loadEnvVariables = (): EnvConfig => {
         SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
         JWT_REFRESH_EXPIRES: process.env.JWT_REFRESH_EXPIRES as string,
         JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET as string,
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
+        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
     };
 };
 
