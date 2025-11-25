@@ -25,6 +25,18 @@ passport.use(
                         message: "User dose not exist",
                     });
                 }
+                // ! check user google authenticated or not
+                const isGoogleAuthenticated = isUserExist.auths.some(
+                    (providerObjects) => providerObjects.provider === "google"
+                );
+
+                if (isGoogleAuthenticated && !isUserExist.password) {
+                    return done(null, false, {
+                        message: "You have authenticated through google login",
+                    });
+                }
+
+                // ! check password match or not
                 const isPasswordMatch = await bcrypt.compare(
                     password as string,
                     isUserExist.password as string
