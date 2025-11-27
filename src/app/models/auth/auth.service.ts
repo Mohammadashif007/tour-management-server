@@ -57,8 +57,6 @@ const resetPassword = async (
     newPassword: string,
     decodedToken: JwtPayload
 ) => {
-    console.log("old", oldPassword);
-    // console.log("new", newPassword);
     const user = await User.findById(decodedToken.userId);
     if (!user) {
         throw new AppError(httpStatus.BAD_REQUEST, "User does not exist");
