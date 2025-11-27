@@ -4,68 +4,15 @@ import { NextFunction, Request, Response } from "express";
 import { envVers } from "../config/env";
 import { AppError } from "../errorHelpers/AppError";
 import mongoose from "mongoose";
-import { TErrorSources, TGenericErrorResponse } from "../interfaces/error.types";
+import {
+    TErrorSources,
+    TGenericErrorResponse,
+} from "../interfaces/error.types";
+import { handleDuplicateError } from "../helpers/handleDuplicateError";
+import { handleCastError } from "../helpers/handleCastError";
+import { handleValidationError } from "../helpers/handleValidationError";
+import { handleZodError } from "../helpers/handleZodError";
 
-
-// ! mongoose duplicate error
-const handleDuplicateError = (err: any): TGenericErrorResponse => {
-    const matchedArray = err.message.match(/email:\s*"([^"]+)"/);
-    return {
-        statusCode: 400,
-        message: `${matchedArray[1]} already exist!!`,
-    };
-};
-
-// ! castError
-const handleCastError = (
-    err: mongoose.Error.CastError
-): TGenericErrorResponse => {
-    return {
-        statusCode: 400,
-        message: "Invalid mongodb objectId, please provide a valid ID",
-    };
-};
-
-// ! validation error
-const handleValidationError = (
-    err: mongoose.Error.ValidationError
-): TGenericErrorResponse => {
-    const errorSources: TErrorSources[] = [];
-
-    const errors = Object.values(err.errors) as {
-        path: string;
-        message: string;
-    }[];
-    errors.forEach((errObject) =>
-        errorSources.push({
-            path: errObject.path,
-            message: errObject.message,
-        })
-    );
-
-    return {
-        statusCode: 400,
-        message: "Validation error",
-        errorSources,
-    };
-};
-
-// ! handle zod error
-const handleZodError = (err: any): TGenericErrorResponse => {
-    const errorSources: TErrorSources[] = [];
-    err.issues.forEach((issue: any) =>
-        errorSources.push({
-            path: issue.path[issue.path.length - 1],
-            message: issue.message,
-        })
-    );
-
-    return {
-        statusCode: 400,
-        message: "Zod error",
-        errorSources,
-    };
-};
 
 export const globalErrorHandler = (
     err: any,
