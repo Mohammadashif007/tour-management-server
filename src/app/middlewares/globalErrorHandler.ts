@@ -32,9 +32,18 @@ export const globalErrorHandler = (
                 message: errObject.message,
             })
         );
-        console.log(errorSource);
         statusCode = 400;
         message = err.message;
+    } else if (err.name === "ZodError") {
+        statusCode = 400;
+        message = "Zod Error";
+        console.log(err.issues);
+        err.issues.forEach((issue: any) =>
+            errorSource.push({
+                path: issue.path[issue.path.length - 1],
+                message: issue.message,
+            })
+        );
     } else if (err instanceof AppError) {
         statusCode = err.statusCode;
         message = err.message;
@@ -47,7 +56,7 @@ export const globalErrorHandler = (
         success: false,
         message: message,
         errorSource,
-        // err,
+        err,
         stack: envVers.NODE_ENV === "development" ? err.stack : "",
     });
 };

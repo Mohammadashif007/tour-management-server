@@ -53,9 +53,9 @@ const updateUser = async (
     decodedToken: JwtPayload
 ) => {
     const isUserExist = await User.findOne({ email: payload.email });
-    // if (!isUserExist) {
-    //     throw new AppError(httpStatus.NOT_FOUND, "User dose not exist");
-    // }
+    if (!isUserExist) {
+        throw new AppError(httpStatus.NOT_FOUND, "User dose not exist");
+    }
 
     if (payload.role) {
         if (

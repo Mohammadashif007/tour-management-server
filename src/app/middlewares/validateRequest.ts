@@ -7,6 +7,7 @@ export const validateRequest = (schema: ZodObject) => {
             req.body = await schema.parseAsync(req.body);
             next();
         } catch (error) {
+            console.log("error from middleware:", error);
             next(error);
         }
     };
