@@ -12,7 +12,7 @@ const createUserIntoDB = async (payload: Partial<IUser>) => {
 
     const isUserExist = await User.findOne({ email });
     if (isUserExist) {
-        throw new AppError(httpStatus.BAD_REQUEST, "User Already exist");
+        throw new AppError(httpStatus.BAD_REQUEST, "User already exist");
     }
 
     const hashedPassword = await bcrypt.hash(
@@ -52,11 +52,10 @@ const updateUser = async (
     payload: Partial<IUser>,
     decodedToken: JwtPayload
 ) => {
-    
     const isUserExist = await User.findOne({ email: payload.email });
-    if (!isUserExist) {
-        throw new AppError(httpStatus.NOT_FOUND, "User dose not exist");
-    }
+    // if (!isUserExist) {
+    //     throw new AppError(httpStatus.NOT_FOUND, "User dose not exist");
+    // }
 
     if (payload.role) {
         if (

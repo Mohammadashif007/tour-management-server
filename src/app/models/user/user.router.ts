@@ -1,7 +1,7 @@
 import express from "express";
 import { UserControllers } from "./user.controller";
-import { validateRequest } from "../../middlewares/validateRequest";
-import { UserValidations } from "./user.validation";
+// import { validateRequest } from "../../middlewares/validateRequest";
+// import { UserValidations } from "./user.validation";
 
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "./user.interface";
@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post(
     "/register",
-    validateRequest(UserValidations.createUserZodSchema),
+    // validateRequest(UserValidations.createUserZodSchema),
     UserControllers.createUser
 );
 router.get("/", checkAuth(...Object.values(Role)), UserControllers.getAllUsers);
