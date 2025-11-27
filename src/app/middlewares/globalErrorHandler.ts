@@ -13,7 +13,6 @@ import { handleCastError } from "../helpers/handleCastError";
 import { handleValidationError } from "../helpers/handleValidationError";
 import { handleZodError } from "../helpers/handleZodError";
 
-
 export const globalErrorHandler = (
     err: any,
     req: Request,
@@ -74,7 +73,7 @@ export const globalErrorHandler = (
         success: false,
         message: message,
         errorSource: errorSources,
-        err,
-        stack: envVers.NODE_ENV === "development" ? err.stack : "",
+        err: envVers.NODE_ENV === "development" ? err : null,
+        stack: envVers.NODE_ENV === "development" ? err.stack : null,
     });
 };
