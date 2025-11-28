@@ -1,8 +1,6 @@
 import { envVers } from "../config/env";
-import { AppError } from "../errorHelpers/AppError";
 import { IAuthProvider, IUser, Role } from "../models/user/user.interface";
 import { User } from "../models/user/user.model";
-import httpStatus from "http-status-codes";
 import bcrypt from "bcrypt";
 
 export const seedSuperAdmin = async () => {
@@ -11,10 +9,8 @@ export const seedSuperAdmin = async () => {
             email: envVers.SUPER_ADMIN_EMAIL,
         });
         if (isSuperAdminExist) {
-            throw new AppError(
-                httpStatus.BAD_REQUEST,
-                "Super admin already exist"
-            );
+            console.log("Super admin already exist");
+            return;
         }
 
         console.log("Trying to create super admin");
